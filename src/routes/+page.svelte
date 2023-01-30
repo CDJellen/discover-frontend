@@ -1,16 +1,25 @@
 <script lang="ts">
 	import { readMeContent, showReadme } from "$lib/components/store";
+
+    import * as vis from "vis-network";
+    import { DataSet } from "vis-data";
+
 	import * as mockApi from "$lib/api/mock/api";
 	import * as api from "$lib/api/rest/api";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
-	import { DiscoverGraph } from "$lib/models/DiscoverGraph";
+    import { styleNode } from "$lib/models/NodeStyle";
+    import { styleEdge } from "$lib/models/EdgeStyle";
+    import { decompose, DiscoverGraph } from "$lib/models/DiscoverGraph";
+	import type { DiscoverNode, DiscoverEdge } from "$lib/models/DiscoverGraph";
 	import DiscoverForceDirectedGraph from "$lib/components/DiscoverForceDirectedGraph.svelte";
 	import Navbar from "$lib/components/Navbar.svelte";
 	import Readme from "$lib/components/Readme.svelte";
 	import Footer from "$lib/components/Footer.svelte";
 
-	let g = new DiscoverGraph();
-  
+	let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
+    let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+    export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
+
 	//async function apiTest(owner: string, repo: string) {
 	//	const msg: GitHubNetwork = await api.getDiscoverNetwork(owner, repo);
 	//	onMessageReceived(msg);
@@ -22,31 +31,49 @@
 
 
 	async function handleApiCall(event: any) {
-		console.log(g)
+		let g = new DiscoverGraph();
+		console.log(g);
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
-		const repo_id = calledOwner+"/"+calledRepo
+		const repo_id = calledOwner+"/"+calledRepo;
 
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(calledOwner, calledRepo);
-		g.pushOrigin(info)
-		console.log(g)
+		g.pushOrigin(info);
+		//console.log(g);
 		// get all contributors
-		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo)
-		g.pushContributors(repo_id, contributors)
-		console.log(g)
+		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo);
+		g.pushContributors(repo_id, contributors);
+		//console.log(g);
 
-		let contributors_to_query: pbRepoContributor[] = contributors.message?.contributors || []
+		let contributors_to_query: pbRepoContributor[] = contributors.message?.contributors || [];
 		for (const contributor of contributors_to_query) {
-			const contributor_login: string = contributor.login || ""
+			const contributor_login: string = contributor.login || "";
 			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
-				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login)
-				g.pushContributions(contributor_login, contributions)
-				console.log(g)
-
+				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login);
+				g.pushContributions(contributor_login, contributions);
+				//console.log(g);
 			}
-
 		}
+
+		const arr = g.toNodeEdge();
+        console.log(state);
+        const newNodes = arr.nodes;
+        const newEdges = arr.edges;
+
+        newNodes.forEach((n: DiscoverNode) => styleNode(n));
+        newEdges.forEach((n: DiscoverEdge) => styleEdge(n));
+
+        console.log(newNodes);
+        console.log(newEdges);
+
+        displayedNodes.add(newNodes);
+        displayedEdges.add(newEdges);
+
+        console.log("LOGGED");
+        console.log(state);
+        console.log(displayedNodes);
+        console.log(displayedEdges);
 
 	}
 
@@ -72,7 +99,7 @@
 <Navbar on:message={handleApiCall}/>
 <div class="App">
 
-	<DiscoverForceDirectedGraph {g}/>
+	<DiscoverForceDirectedGraph {state}/>
 
 	{#if $showReadme}
 		<Readme {readMeContent} />

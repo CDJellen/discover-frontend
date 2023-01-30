@@ -12,14 +12,14 @@
     import type { DiscoverNode, DiscoverEdge } from "$lib/models/DiscoverGraph";
 	import type { pbReadReadMeResponse } from "$lib/models/generated";
 
-    export let g = new DiscoverGraph();
+    //export let g = new DiscoverGraph();
 
     let target: HTMLDivElement;
   
     let network: vis.Network;
     let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
-    let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
+    export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
     onMount(() => {
         // TODO clean
@@ -35,7 +35,7 @@
 
         function onDoubleClick(e: any) {
             doubleClickTime = new Date().getTime();
-            doOnDoubleClick(e)
+            doOnDoubleClick(e);
         }
 
         function doOnDoubleClick(e: any) {
@@ -43,8 +43,9 @@
             if (e.nodes) {
                 showReadme.set(true);
 
-                const owner = displayedNodes.get(network.getSelection().nodes[0])?.label?.split("/")[0] || 'foo';
-                const repoName = displayedNodes.get(network.getSelection().nodes[0])?.label?.split("/")[1] || 'bar';
+                const nameWithOwner: string = String(network.getSelection().nodes[0])
+                const owner = nameWithOwner.split("/")[0] || 'foo';
+                const repoName = nameWithOwner.split("/")[1] || 'bar';
                 
                 handleReadMeCall(owner, repoName);
             }
@@ -93,26 +94,15 @@
     });
   
     $: {
-        g && updateNodes();
+        state && updateNodes();
     }
     
     const updateNodes = () => {
         //displayedNodes.clear()
         //displayedEdges.clear();
 
-        const arr = g.toNodeEdge();
+        console.log(state);
 
-        const {
-            newNodes: newNodes,
-            newEdges: newEdges
-        } = decompose(arr);
-    
-        newNodes.forEach((n: DiscoverNode) => styleNode(n));
-        newEdges.forEach((n: DiscoverEdge) => styleEdge(n));
-    
-        displayedNodes.add(newNodes);
-        displayedEdges.add(newEdges);
-    
         network?.fit({
             animation: false,
         });

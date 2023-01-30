@@ -23,18 +23,20 @@ export class DiscoverGraph {
     public addNode(node_id: string, node: DiscoverNode) {
         if (node_id in this._nodes) {
             // TODO: merge nodes?
-            this._nodes.set(node_id, node)
+            this._nodes.set(node_id, node);
         } else {
-            this._nodes.set(node_id, node)
+            this._nodes.set(node_id, node);
         }
     }
 
     public addEdge(edge: DiscoverEdge) {
-        this._edges.add(edge)
+        //console.log("adding ", edge);
+        this._edges.add(edge);
+        //console.log("edges ", this._edges);
     }
 
     public pushOrigin(origin: pbReadInfoResponse) {
-        this.processInfo(origin)
+        this.processInfo(origin);
     }
 
     public pushContributors(repo_id: string, networkData: pbReadContributorsResponse) {
@@ -133,7 +135,7 @@ export class DiscoverGraph {
 
     public toNodeEdge(): NodeEdgeArray {
         return { 
-            nodes: this._nodes,
+            nodes: [...this._nodes.values()],
             edges: [...this._edges.values()]
         };
     }
@@ -167,7 +169,7 @@ export interface DiscoverEdge extends vis.Edge {
 }
 
 export interface NodeEdgeArray {
-  nodes: Map<string, DiscoverNode>;
+  nodes: DiscoverNode[];
   edges: DiscoverEdge[];
 }
 
