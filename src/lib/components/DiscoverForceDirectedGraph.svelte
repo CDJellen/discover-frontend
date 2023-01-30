@@ -97,8 +97,8 @@
     }
     
     const updateNodes = () => {
-        displayedNodes.clear()
-        displayedEdges.clear();
+        //displayedNodes.clear()
+        //displayedEdges.clear();
 
         const arr = g.toNodeEdge();
 

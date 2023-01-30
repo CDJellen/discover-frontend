@@ -22,6 +22,7 @@
 
 
 	async function handleApiCall(event: any) {
+		console.log(g)
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
 		const repo_id = calledOwner+"/"+calledRepo
@@ -29,17 +30,20 @@
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(calledOwner, calledRepo);
 		g.pushOrigin(info)
-
+		console.log(g)
 		// get all contributors
 		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo)
 		g.pushContributors(repo_id, contributors)
+		console.log(g)
 
 		let contributors_to_query: pbRepoContributor[] = contributors.message?.contributors || []
 		for (const contributor of contributors_to_query) {
 			const contributor_login: string = contributor.login || ""
-			if (contributor_login != "") {
+			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
 				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login)
 				g.pushContributions(contributor_login, contributions)
+				console.log(g)
+
 			}
 
 		}
