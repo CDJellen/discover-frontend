@@ -5,7 +5,6 @@
 
     import { readMeContent, showReadme } from "$lib/components/store";
 	import * as api from "$lib/api/rest/api";
-    import * as mockApi from "$lib/api/mock/api"; // for debugging
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
     import { decompose, DiscoverGraph } from "$lib/models/DiscoverGraph";

@@ -4,7 +4,6 @@
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
-	import * as mockApi from "$lib/api/mock/api";
 	import * as api from "$lib/api/rest/api";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
     import { styleNode } from "$lib/models/NodeStyle";

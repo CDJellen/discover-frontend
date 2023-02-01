@@ -1,7 +1,7 @@
 {
 	"name": "discover-open-source",
-	"version": "0.0.3.1",
-	"description": "Find new Open-source projects through the authors of the projects you love.",
+	"version": "v0.0.4",
+	"description": "Find new Open-source projects by exploring the GitHub graph.",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
