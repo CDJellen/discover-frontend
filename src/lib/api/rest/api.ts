@@ -1,8 +1,9 @@
 import type { pbReadInfoResponse, pbReadContributorsResponse, pbReadContributionsResponse, pbReadReadMeResponse } from "$lib/models/generated";
 import type { DiscoverGraph } from "$lib/models/DiscoverGraph";
-import { env } from 'node:process';
+//import { env } from 'node:process';
 
-const base = env.API_ENDPOINT || 'http://localhost:8080/api/v1';
+//const base = env.API_ENDPOINT || 'http://localhost:8080/api/v1';
+const base = 'http://localhost:8080/api/v1';
 
 export async function getInfo(owner: string, repoName: string): Promise<pbReadInfoResponse> {
     const res = await fetch(`${base}/info/${owner}/${repoName}`, { method: 'GET'});
