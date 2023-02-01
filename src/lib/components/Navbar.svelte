@@ -4,8 +4,8 @@
     import logo from '$lib/assets/logo.png'
 	import Modal, {getModal} from '$lib/components/Modal.svelte';
 
-    let repoOwner: string = 'Microsoft';
-    let repoName: string = 'LightGBM';
+    let repoOwner: string = 'PyTorch';
+    let repoName: string = 'PyTorch';
     const dispatch = createEventDispatcher();
 
     function callApi() {
