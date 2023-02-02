@@ -40,12 +40,12 @@ export async function getContributions(login: string): Promise<pbReadContributio
 
 export async function getReadMe(owner: string, repoName: string): Promise<pbReadReadMeResponse> {
     // assumed outdated README format  'master' branch rather than 'main'
-    let res = await fetch(`${base}/readme/${owner}/${repoName}/master/md`);
+    let res = await fetch(`${base}/readme/${owner}/${repoName}/main/md`);
     let readMe = await res.json();
-    if (res.ok && !(readMe.message.html.indexOf("<h1>Failed to Load:") >= 0)) {
+    if (res.ok && !(readMe.message.html.indexOf("<h1>Failed") >= 0)) {
         return readMe;
     }
-    res = await fetch(`${base}/readme/${owner}/${repoName}/main/md`);
+    res = await fetch(`${base}/readme/${owner}/${repoName}/master/md`);
     readMe = await res.json();
     if (res.ok) {
         return readMe;
