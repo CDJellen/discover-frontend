@@ -9,9 +9,9 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-			pages: "web_dev",
-			assets: "web_dev",
-			fallback: null
+			pages: "frontend",
+			assets: "frontend",
+			fallback: "index.html",
 		})
 	}
 

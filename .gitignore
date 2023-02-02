@@ -14,3 +14,4 @@ vite.config.ts.timestamp-*
 /api/dist
 /api/build
 web_dev/
+frontend/
