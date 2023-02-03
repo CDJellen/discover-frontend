@@ -18,6 +18,7 @@
     let network: vis.Network;
     let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
     onMount(() => {
@@ -65,17 +66,17 @@
             },
             physics: {
                 forceAtlas2Based: {
-                    gravitationalConstant: -26,
+                    gravitationalConstant: -22,
                     centralGravity: 0.005,
                     springLength: 230,
-                    springConstant: 0.18,
+                    springConstant: 0.35,
                 },
-                maxVelocity: 146,
+                maxVelocity: 100,
                 solver: "forceAtlas2Based",
                 timestep: 0.35,
                 stabilization: {
                     enabled: true,
-                    iterations: 2000,
+                    iterations: 500,
                     updateInterval: 25,
                 },
             },
@@ -97,11 +98,6 @@
     }
     
     const updateNodes = () => {
-        //displayedNodes.clear()
-        //displayedEdges.clear();
-
-        console.log(state);
-
         network?.fit({
             animation: false,
         });
