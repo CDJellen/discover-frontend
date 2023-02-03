@@ -15,23 +15,13 @@
 	import Readme from "$lib/components/Readme.svelte";
 	import Footer from "$lib/components/Footer.svelte";
 
+	let g = new DiscoverGraph();
 	let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
-	//async function apiTest(owner: string, repo: string) {
-	//	const msg: GitHubNetwork = await api.getDiscoverNetwork(owner, repo);
-	//	onMessageReceived(msg);
-	//}
-
-	//<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={ () => { mockApiResponse('mitre') } }>Mock API call (Caldera)</button><br/>
-	//<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={ () => { mockApiResponse('microsoft') } }>Mock API call (LightGBM)</button><br/>
-	//<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={ () => { mockApiResponse('pytorch') } }>Mock API call (PyTorch)</button><br/>
-
-
 	async function handleApiCall(event: any) {
-		let g = new DiscoverGraph();
-		console.log(g);
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
 		const repo_id = calledOwner+"/"+calledRepo;
@@ -39,11 +29,16 @@
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(calledOwner, calledRepo);
 		g.pushOrigin(info);
-		//console.log(g);
+
+		// update the disaplyed graph
+		updateGraph()
+
 		// get all contributors
 		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo);
 		g.pushContributors(repo_id, contributors);
-		//console.log(g);
+
+		// update the disaplyed graph
+		updateGraph()
 
 		let contributors_to_query: pbRepoContributor[] = contributors.message?.contributors || [];
 		for (const contributor of contributors_to_query) {
@@ -51,29 +46,23 @@
 			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
 				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login);
 				g.pushContributions(contributor_login, contributions);
-				//console.log(g);
+
+				// update the disaplyed graph
+				updateGraph()
 			}
 		}
+	}
 
+	async function updateGraph() {
 		const arr = g.toNodeEdge();
-        console.log(state);
         const newNodes = arr.nodes;
         const newEdges = arr.edges;
 
         newNodes.forEach((n: DiscoverNode) => styleNode(n));
         newEdges.forEach((n: DiscoverEdge) => styleEdge(n));
 
-        console.log(newNodes);
-        console.log(newEdges);
-
         displayedNodes.add(newNodes);
         displayedEdges.add(newEdges);
-
-        console.log("LOGGED");
-        console.log(state);
-        console.log(displayedNodes);
-        console.log(displayedEdges);
-
 	}
 
 </script>
@@ -95,7 +84,9 @@
 </style>
 
 <div id="navbar"></div>
+
 <Navbar on:message={handleApiCall}/>
+
 <div class="App">
 
 	<DiscoverForceDirectedGraph {state}/>
