@@ -9,7 +9,9 @@
     const dispatch = createEventDispatcher();
 
     function callApi() {
-        dispatch('message', {
+        console.log(repoName, repoOwner);
+        dispatch('init', {
+            init: true,
             owner: repoOwner,
             repo: repoName
         });

@@ -22,13 +22,15 @@
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
 	async function handleApiCall(event: any) {
+		console.log(event);
+		let init = event.detail.init || false;
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
 		const repo_id = calledOwner+"/"+calledRepo;
 
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(calledOwner, calledRepo);
-		g.pushOrigin(info);
+		g.pushOrigin(info, init);
 
 		// update the disaplyed graph
 		updateGraph()
@@ -51,7 +53,15 @@
 				updateGraph()
 			}
 		}
+
+		// reset origin style
+		g.pushOrigin(info, init);
+
+		// update the disaplyed graph
+		updateGraph()
 	}
+
+	
 
 	async function updateGraph() {
 		const arr = g.toNodeEdge();
@@ -61,8 +71,8 @@
         newNodes.forEach((n: DiscoverNode) => styleNode(n));
         newEdges.forEach((n: DiscoverEdge) => styleEdge(n));
 
-        displayedNodes.add(newNodes);
-        displayedEdges.add(newEdges);
+        displayedNodes.update(newNodes);
+        displayedEdges.update(newEdges);
 	}
 
 </script>
@@ -85,11 +95,11 @@
 
 <div id="navbar"></div>
 
-<Navbar on:message={handleApiCall}/>
+<Navbar on:init={handleApiCall}/>
 
 <div class="App">
 
-	<DiscoverForceDirectedGraph {state}/>
+	<DiscoverForceDirectedGraph {state} on:message={handleApiCall}/>
 
 	{#if $showReadme}
 		<Readme {readMeContent} />

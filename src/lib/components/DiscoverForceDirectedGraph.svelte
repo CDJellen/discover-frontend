@@ -1,5 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { createEventDispatcher } from 'svelte';
+
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
@@ -14,6 +16,8 @@
     //export let g = new DiscoverGraph();
 
     let target: HTMLDivElement;
+
+    let searchKey: boolean = false;
   
     let network: vis.Network;
     let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
@@ -21,6 +25,8 @@
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
+    const dispatch = createEventDispatcher();
+
     onMount(() => {
         // TODO clean
         let doubleClickTime = new Date().getTime();
@@ -31,6 +37,34 @@
             let readMe: string = readMeResponse.message?.html || "<h1>Failed to Load: <a href=github.com>github.com</a></h1>"
             readMeContent.set(readMe);
             //readMeContent = mockApi.getReadMe(owner, repoName, null);
+        }
+
+        function onShiftClick(e: any) {
+            console.log("onShift");
+            console.log(e);
+
+
+            if (searchKey) {
+                console.log("doing on shift");
+                doOnShiftClick(e);
+            }
+        }
+
+        function doOnShiftClick(e: any) {
+            if (e.nodes) {
+                const nameWithOwner: string = String(network.getSelection().nodes[0])
+                const owner = nameWithOwner.split("/")[0];
+                const repoName = nameWithOwner.split("/")[1];
+
+                if (owner != 'undefined' && repoName != 'undefined') {
+                    dispatch('message', {
+                        init: false,
+                        owner: owner,
+                        repo: repoName,
+                    })
+                }
+            }
+            network.unselectAll();
         }
 
         function onDoubleClick(e: any) {
@@ -85,7 +119,18 @@
         // init network
         network = new vis.Network(target, state, options);
 
+        target.addEventListener('keydown', (e) => {
+            if (e.key == 'Shift') {
+                searchKey = true;
+            }
+        })
+
+        target.addEventListener('keyup', (e) => {
+            searchKey = false;
+        })
+
         // core network events
+        network.on('click', function(e) {onShiftClick(e)});
         network.on('doubleClick', function(e) {onDoubleClick(e)});
         // other network events
         //network.on('hoverNode', function (e) {doOnHoverNode(e)});

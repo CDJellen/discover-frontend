@@ -35,8 +35,8 @@ export class DiscoverGraph {
         //console.log("edges ", this._edges);
     }
 
-    public pushOrigin(origin: pbReadInfoResponse) {
-        this.processInfo(origin);
+    public pushOrigin(origin: pbReadInfoResponse, init: boolean) {
+        this.processInfo(origin, init);
     }
 
     public pushContributors(repo_id: string, networkData: pbReadContributorsResponse) {
@@ -49,7 +49,7 @@ export class DiscoverGraph {
         return this;
     }
 
-    private processInfo(message: pbReadInfoResponse) {
+    private processInfo(message: pbReadInfoResponse, init: boolean) {
         let origin_id = message.message?.nameWithOwner
         let origin: DiscoverNode = {
             isOrigin: true,
@@ -64,8 +64,10 @@ export class DiscoverGraph {
             origin.label = origin_id
             origin.avatar_url = message.message?.owner?.avatarUrl
         }
-
-        this._origin = origin
+        if (init) {
+            this._origin = origin
+        }
+        this.addNode(origin_id, origin)
     }
 
     private processContributors(repo_id: string, message: pbReadContributorsResponse) {
