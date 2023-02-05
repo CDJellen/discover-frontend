@@ -30,13 +30,11 @@ export class DiscoverGraph {
     }
 
     public addEdge(edge: DiscoverEdge) {
-        //console.log("adding ", edge);
         this._edges.add(edge);
-        //console.log("edges ", this._edges);
     }
 
-    public pushOrigin(origin: pbReadInfoResponse) {
-        this.processInfo(origin);
+    public pushOrigin(origin: pbReadInfoResponse, init: boolean) {
+        this.processInfo(origin, init);
     }
 
     public pushContributors(repo_id: string, networkData: pbReadContributorsResponse) {
@@ -49,7 +47,7 @@ export class DiscoverGraph {
         return this;
     }
 
-    private processInfo(message: pbReadInfoResponse) {
+    private processInfo(message: pbReadInfoResponse, init: boolean) {
         let origin_id = message.message?.nameWithOwner
         let origin: DiscoverNode = {
             isOrigin: true,
@@ -64,8 +62,10 @@ export class DiscoverGraph {
             origin.label = origin_id
             origin.avatar_url = message.message?.owner?.avatarUrl
         }
-
-        this._origin = origin
+        if (init) {
+            this._origin = origin
+        }
+        this.addNode(origin_id, origin)
     }
 
     private processContributors(repo_id: string, message: pbReadContributorsResponse) {
@@ -92,7 +92,8 @@ export class DiscoverGraph {
                     isContributor: true,
                     isContribution: false,
                     from: repo_id,
-                    to: contributor.login
+                    to: contributor.login,
+                    num_contributions: contributor.contributions
                 }
 
                 // add edge to graph
@@ -124,7 +125,7 @@ export class DiscoverGraph {
                     isContributor: false,
                     isContribution: true,
                     from: login,
-                    to: contribution.nameWithOwner
+                    to: contribution.nameWithOwner,
                 }
 
                 // add edge to graph
@@ -139,20 +140,6 @@ export class DiscoverGraph {
             edges: [...this._edges.values()]
         };
     }
-
-    private ensureRepositoryNodeExists(origin: DiscoverNode) {
-        if(!origin.id) {
-            const baseOrigin: DiscoverNode = {
-                id: "Repository Not Found.",
-                label: "Repository Not Found.",
-                isOrigin: true,
-                isRepository: true,
-                avatar_url: defaultAvatarUrl,
-            };
-
-            this._nodes.set("Repository Not Found.", baseOrigin);
-        }
-    }
 }
 
 export interface DiscoverNode extends vis.Node {
@@ -166,6 +153,7 @@ export interface DiscoverNode extends vis.Node {
 export interface DiscoverEdge extends vis.Edge {
   isContributor?: boolean;
   isContribution?: boolean;
+  num_contributions?: number;
 }
 
 export interface NodeEdgeArray {

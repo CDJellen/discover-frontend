@@ -1,9 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { createEventDispatcher } from 'svelte';
+
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
-    import { readMeContent, showReadme } from "$lib/components/store";
+	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
+    import { readMeContent, showReadme } from "$lib/utility/store";
 	import * as api from "$lib/api/rest/api";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
@@ -14,12 +17,20 @@
     //export let g = new DiscoverGraph();
 
     let target: HTMLDivElement;
+
+    let searchKey: boolean = false;
   
     let network: vis.Network;
     let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+    
+
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
+    const dispatch = createEventDispatcher();
+    const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
+    const height: number = write_footer ? 97.5 : 100;
+
     onMount(() => {
         // TODO clean
         let doubleClickTime = new Date().getTime();
@@ -30,6 +41,29 @@
             let readMe: string = readMeResponse.message?.html || "<h1>Failed to Load: <a href=github.com>github.com</a></h1>"
             readMeContent.set(readMe);
             //readMeContent = mockApi.getReadMe(owner, repoName, null);
+        }
+
+        function onShiftClick(e: any) {
+            if (searchKey) {
+                doOnShiftClick(e);
+            }
+        }
+
+        function doOnShiftClick(e: any) {
+            if (e.nodes) {
+                const nameWithOwner: string = String(network.getSelection().nodes[0])
+                const owner = nameWithOwner.split("/")[0];
+                const repoName = nameWithOwner.split("/")[1];
+
+                if (owner != 'undefined' && repoName != 'undefined') {
+                    dispatch('message', {
+                        init: false,
+                        owner: owner,
+                        repo: repoName,
+                    })
+                }
+            }
+            network.unselectAll();
         }
 
         function onDoubleClick(e: any) {
@@ -43,8 +77,8 @@
                 showReadme.set(true);
 
                 const nameWithOwner: string = String(network.getSelection().nodes[0])
-                const owner = nameWithOwner.split("/")[0] || 'foo';
-                const repoName = nameWithOwner.split("/")[1] || 'bar';
+                const owner = nameWithOwner.split("/")[0] || 'undefined';
+                const repoName = nameWithOwner.split("/")[1] || 'undefined';
                 
                 handleReadMeCall(owner, repoName);
             }
@@ -65,17 +99,17 @@
             },
             physics: {
                 forceAtlas2Based: {
-                    gravitationalConstant: -26,
+                    gravitationalConstant: -22,
                     centralGravity: 0.005,
                     springLength: 230,
-                    springConstant: 0.18,
+                    springConstant: 0.35,
                 },
-                maxVelocity: 146,
+                maxVelocity: 100,
                 solver: "forceAtlas2Based",
                 timestep: 0.35,
                 stabilization: {
                     enabled: true,
-                    iterations: 2000,
+                    iterations: 500,
                     updateInterval: 25,
                 },
             },
@@ -84,7 +118,18 @@
         // init network
         network = new vis.Network(target, state, options);
 
+        target.addEventListener('keydown', (e) => {
+            if (e.key == 'Shift') {
+                searchKey = true;
+            }
+        })
+
+        target.addEventListener('keyup', (e) => {
+            searchKey = false;
+        })
+
         // core network events
+        network.on('click', function(e) {onShiftClick(e)});
         network.on('doubleClick', function(e) {onDoubleClick(e)});
         // other network events
         //network.on('hoverNode', function (e) {doOnHoverNode(e)});
@@ -97,11 +142,6 @@
     }
     
     const updateNodes = () => {
-        //displayedNodes.clear()
-        //displayedEdges.clear();
-
-        console.log(state);
-
         network?.fit({
             animation: false,
         });
@@ -109,4 +149,4 @@
 
 </script>
   
-<div bind:this={target} style="width: 100%; height: 97.5vh;" />
+<div bind:this={target} style="width: 100%; height: {height}vh;" />

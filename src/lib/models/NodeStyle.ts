@@ -33,11 +33,6 @@ export function styleNode(node: DiscoverNode) {
     node.shape = "circularImage";
     node.image = node.avatar_url;
 
-    if (node.isRepository) {
-        node.size = 32;
-        node.mass = 5;
-    }
-
     if (node.isOrigin) {
         node.size = 96;
         node.font = {
@@ -47,6 +42,10 @@ export function styleNode(node: DiscoverNode) {
             strokeColor: "#f9fbfd",
             size: 32,
         }
+    }
+    else if (node.isRepository) {
+        node.size = 24;
+        node.mass = 5;
     }
   
     return node;

@@ -1,6 +1,5 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { tooltip } from './tooltip';
     import logo from '$lib/assets/logo.png'
 	import Modal, {getModal} from '$lib/components/Modal.svelte';
 
@@ -9,7 +8,8 @@
     const dispatch = createEventDispatcher();
 
     function callApi() {
-        dispatch('message', {
+        dispatch('init', {
+            init: true,
             owner: repoOwner,
             repo: repoName
         });

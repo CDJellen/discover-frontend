@@ -1,0 +1,15 @@
+{
+    "workspaceFolder": "/usr/src/app",
+  
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+    },
+  
+    "extensions": [
+        "streetsidesoftware.code-spell-checker",
+        "GitHub.vscode-pull-request-github",
+        "redhat.vscode-yaml"
+    ],
+  
+    "forwardPorts": [5173],
+}
