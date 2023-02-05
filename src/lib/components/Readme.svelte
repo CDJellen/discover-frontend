@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { readMeContent } from "$lib/components/store";
+    import { readMeContent } from "$lib/utility/store";
 
 </script>
 

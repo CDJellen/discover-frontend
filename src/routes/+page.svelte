@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { readMeContent, showReadme } from "$lib/components/store";
-
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
+	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
 	import * as api from "$lib/api/rest/api";
+	import { readMeContent, showReadme } from "$lib/utility/store";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
-    import { decompose, DiscoverGraph } from "$lib/models/DiscoverGraph";
+    import { DiscoverGraph } from "$lib/models/DiscoverGraph";
 	import type { DiscoverNode, DiscoverEdge } from "$lib/models/DiscoverGraph";
 	import DiscoverForceDirectedGraph from "$lib/components/DiscoverForceDirectedGraph.svelte";
 	import Navbar from "$lib/components/Navbar.svelte";
@@ -21,8 +21,9 @@
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
+	const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
+
 	async function handleApiCall(event: any) {
-		console.log(event);
 		let init = event.detail.init || false;
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
@@ -60,8 +61,6 @@
 		// update the disaplyed graph
 		updateGraph()
 	}
-
-	
 
 	async function updateGraph() {
 		const arr = g.toNodeEdge();
@@ -111,4 +110,6 @@
 	<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={ () => { ($showReadme) ? showReadme.set(false) : showReadme.set(true); } }>Toggle README Pane</button><br/>
 </div>
 
-<Footer />
+{#if write_footer}
+	<Footer />
+{/if}

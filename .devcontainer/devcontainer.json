@@ -1,25 +1,15 @@
 {
-    // Default path to open when attaching to a new container.
     "workspaceFolder": "/usr/src/app",
   
-    // Set *default* container specific settings.json values on container create.
     "settings": {
-      "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash"
     },
   
-    // Add the IDs of extensions you want installed when the container is created.
     "extensions": [
         "streetsidesoftware.code-spell-checker",
         "GitHub.vscode-pull-request-github",
         "redhat.vscode-yaml"
     ],
   
-    // An array port numbers to forward
     "forwardPorts": [5173],
-  
-    // Container user VS Code should use when connecting
-    //"remoteUser": "vscode",
-  
-    // Set environment variables for VS Code and sub-processes
-    //"remoteEnv": { "MY_VARIABLE": "some-value" }
-  }
+}

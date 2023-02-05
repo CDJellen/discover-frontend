@@ -5,7 +5,8 @@
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
-    import { readMeContent, showReadme } from "$lib/components/store";
+	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
+    import { readMeContent, showReadme } from "$lib/utility/store";
 	import * as api from "$lib/api/rest/api";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
@@ -22,10 +23,13 @@
     let network: vis.Network;
     let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+    
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
     const dispatch = createEventDispatcher();
+    const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
+    const height: number = write_footer ? 97.5 : 100;
 
     onMount(() => {
         // TODO clean
@@ -40,12 +44,7 @@
         }
 
         function onShiftClick(e: any) {
-            console.log("onShift");
-            console.log(e);
-
-
             if (searchKey) {
-                console.log("doing on shift");
                 doOnShiftClick(e);
             }
         }
@@ -78,8 +77,8 @@
                 showReadme.set(true);
 
                 const nameWithOwner: string = String(network.getSelection().nodes[0])
-                const owner = nameWithOwner.split("/")[0] || 'foo';
-                const repoName = nameWithOwner.split("/")[1] || 'bar';
+                const owner = nameWithOwner.split("/")[0] || 'undefined';
+                const repoName = nameWithOwner.split("/")[1] || 'undefined';
                 
                 handleReadMeCall(owner, repoName);
             }
@@ -150,4 +149,4 @@
 
 </script>
   
-<div bind:this={target} style="width: 100%; height: 97.5vh;" />
+<div bind:this={target} style="width: 100%; height: {height}vh;" />
