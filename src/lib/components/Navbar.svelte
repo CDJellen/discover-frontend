@@ -5,20 +5,25 @@
 
     let repoOwner: string = 'PyTorch';
     let repoName: string = 'PyTorch';
+    let perPage: number = 30;
+    let numContributions: number = 5;
+
     const dispatch = createEventDispatcher();
 
     function callApi() {
         dispatch('init', {
             init: true,
             owner: repoOwner,
-            repo: repoName
+            repo: repoName,
+            perPage: perPage,
+            numContributions: numContributions,
         });
     }
 
 </script>
 
 <!-- Navbar -->
-<div class="h-14 w-screen fixed z-10 top-0 backdrop-blur text-gray-50 grid grid-cols-3">
+<div class="h-14 w-screen fixed z-10 top-0 backdrop-blur text-gray-50 grid grid-cols-2">
     <div class="h-full flex items-center justify-left gap-2 text-xl sm:text-2xl px-6">
         <a href="https://github.com/cdjellen"><img src="{logo}" alt="Logo" class="object-cover w-[48px] h-[48px] rounded-full"></a>
         <a href="https://github.com/cdjellen/discover-open-source" class=""><span class="whitespace-nowrap">Discover New Open-Source Projects</span></a>
@@ -26,12 +31,14 @@
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"  style="width:24px;height:24px;" class="footer-icon" on:click={ () => getModal('accessibility').open() }>
     </div>
     <nav class="text-md sm:text-xl text-gray-50 flex items-center justify-center gap-2">
-        <form class="w-full max-w-md">
+        <form class="w-full">
             <div class="flex items-center border-b border-gray-50 py-2">
                 <p class="text-gray-50 text-xs bold">Owner: </p>
                 <input bind:value={ repoOwner } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Microsoft" aria-label="Repository Owner">
                 <p class="text-gray-50 text-xs bold">Repository: </p>
                 <input bind:value={ repoName } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="LightGBM" aria-label="Repository name">
+                <p class="text-gray-50 text-xs bold">Number of Contributions: </p>
+                <input bind:value={ numContributions } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="number" placeholder="5" aria-label="Number of Contributions">
                 <button on:click={() => { callApi() }} class="flex-shrink-0 bg-sky-900 hover:bg-sky-700 border-sky-900 hover:border-sky-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
                     Discover
                 </button>
