@@ -18,6 +18,10 @@
 	let g = new DiscoverGraph();
 	let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
+	let perPage: number | null = null;
+	let numContributions: number | null = null;
+	let anon: string = '';
+	let page: number = 1;
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
@@ -27,6 +31,13 @@
 		let init = event.detail.init || false;
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
+		if (!perPage) {
+			perPage = event.detail.perPage || 5
+		}
+		if (!numContributions) {
+			numContributions = event.detail.numContributions || 5
+		}
+
 		const repo_id = calledOwner+"/"+calledRepo;
 
 		// get the seed repo
@@ -37,7 +48,7 @@
 		updateGraph()
 
 		// get all contributors
-		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo);
+		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo, anon, perPage, page);
 		g.pushContributors(repo_id, contributors);
 
 		// update the disaplyed graph
@@ -47,7 +58,7 @@
 		for (const contributor of contributors_to_query) {
 			const contributor_login: string = contributor.login || "";
 			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
-				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login);
+				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login, numContributions);
 				g.pushContributions(contributor_login, contributions);
 
 				// update the disaplyed graph

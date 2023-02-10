@@ -16,8 +16,20 @@ export async function getInfo(owner: string, repoName: string): Promise<pbReadIn
     }
 }
 
-export async function getContributors(owner: string, repoName: string): Promise<pbReadContributorsResponse> {
-    const res = await fetch(`${base}/contributors/${owner}/${repoName}`, { method: 'GET'});
+export async function getContributors(owner: string, repoName: string, anon: string | null, perPage: number | null, page: number | null): Promise<pbReadContributorsResponse> {
+    if (!anon) {
+        anon=''
+    } else if (anon != '') {
+        anon = 'true'
+    }
+    if (!perPage || perPage == 0) {
+        perPage = 5
+    }
+    if (!page || page < 1) {
+        page = 1
+    }
+    
+    const res = await fetch(`${base}/contributors/${owner}/${repoName}?anon=${anon}?perPage=${perPage}?page=${page}`, { method: 'GET'});
     const repoContributors = await res.json();
 
     if (res.ok) {
@@ -27,8 +39,11 @@ export async function getContributors(owner: string, repoName: string): Promise<
     }
 }
 
-export async function getContributions(login: string): Promise<pbReadContributionsResponse> {
-    const res = await fetch(`${base}/contributions/${login}`, { method: 'GET'});
+export async function getContributions(login: string, numContributions: number | null): Promise<pbReadContributionsResponse> {
+    if (!numContributions || numContributions == 0) {
+        numContributions = 5
+    }
+    const res = await fetch(`${base}/contributions/${login}?numContributions=${numContributions}`, { method: 'GET'});
     const userContributions = await res.json();
 
     if (res.ok) {
