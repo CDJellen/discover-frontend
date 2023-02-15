@@ -1,7 +1,8 @@
 <script lang="ts">
-    import * as vis from "vis-network";
+	import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
+	import { PUBLIC_API_ENDPOINT } from "$env/static/public"
 	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
 	import * as api from "$lib/api/rest/api";
 	import { readMeContent, showReadme } from "$lib/utility/store";
@@ -26,6 +27,7 @@
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
 	const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
+	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
 	async function handleApiCall(event: any) {
 		let init = event.detail.init || false;
@@ -41,27 +43,27 @@
 		const repo_id = calledOwner+"/"+calledRepo;
 
 		// get the seed repo
-		const info: pbReadInfoResponse = await api.getInfo(calledOwner, calledRepo);
+		const info: pbReadInfoResponse = await api.getInfo(api_endpoint, calledOwner, calledRepo);
 		g.pushOrigin(info, init);
 
-		// update the disaplyed graph
+		// update the displayed graph
 		updateGraph()
 
 		// get all contributors
-		const contributors: pbReadContributorsResponse = await api.getContributors(calledOwner, calledRepo, anon, perPage, page);
+		const contributors: pbReadContributorsResponse = await api.getContributors(api_endpoint, calledOwner, calledRepo, anon, perPage, page);
 		g.pushContributors(repo_id, contributors);
 
-		// update the disaplyed graph
+		// update the displayed graph
 		updateGraph()
 
 		let contributors_to_query: pbRepoContributor[] = contributors.message?.contributors || [];
 		for (const contributor of contributors_to_query) {
 			const contributor_login: string = contributor.login || "";
 			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
-				const contributions: pbReadContributionsResponse = await api.getContributions(contributor_login, numContributions);
+				const contributions: pbReadContributionsResponse = await api.getContributions(api_endpoint, contributor_login, numContributions);
 				g.pushContributions(contributor_login, contributions);
 
-				// update the disaplyed graph
+				// update the displayed graph
 				updateGraph()
 			}
 		}
@@ -69,7 +71,7 @@
 		// reset origin style
 		g.pushOrigin(info, init);
 
-		// update the disaplyed graph
+		// update the displayed graph
 		updateGraph()
 	}
 

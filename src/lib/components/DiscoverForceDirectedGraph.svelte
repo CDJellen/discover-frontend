@@ -5,6 +5,7 @@
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
+    import { PUBLIC_API_ENDPOINT } from "$env/static/public"
 	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
     import { readMeContent, showReadme } from "$lib/utility/store";
 	import * as api from "$lib/api/rest/api";
@@ -30,6 +31,7 @@
     const dispatch = createEventDispatcher();
     const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
     const height: number = write_footer ? 97.5 : 100;
+	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
     onMount(() => {
         // TODO clean
@@ -37,7 +39,7 @@
         const threshold: number = 200;
 
         async function handleReadMeCall(owner: string, repoName: string) {
-            const readMeResponse: pbReadReadMeResponse = await api.getReadMe(owner, repoName)
+            const readMeResponse: pbReadReadMeResponse = await api.getReadMe(api_endpoint, owner, repoName)
             let readMe: string = readMeResponse.message?.html || "<h1>Failed to Load: <a href=github.com>github.com</a></h1>"
             readMeContent.set(readMe);
             //readMeContent = mockApi.getReadMe(owner, repoName, null);

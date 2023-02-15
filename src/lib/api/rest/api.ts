@@ -2,10 +2,7 @@ import type { pbReadInfoResponse, pbReadContributorsResponse, pbReadContribution
 import type { DiscoverGraph } from "$lib/models/DiscoverGraph";
 //import { env } from 'node:process';
 
-//const base = env.API_ENDPOINT || 'http://localhost:8080/api/v1';
-const base = '/api/v1';
-
-export async function getInfo(owner: string, repoName: string): Promise<pbReadInfoResponse> {
+export async function getInfo(base: string, owner: string, repoName: string): Promise<pbReadInfoResponse> {
     const res = await fetch(`${base}/info/${owner}/${repoName}`, { method: 'GET'});
     const repoInfo = await res.json();
 
@@ -16,7 +13,7 @@ export async function getInfo(owner: string, repoName: string): Promise<pbReadIn
     }
 }
 
-export async function getContributors(owner: string, repoName: string, anon: string | null, perPage: number | null, page: number | null): Promise<pbReadContributorsResponse> {
+export async function getContributors(base: string, owner: string, repoName: string, anon: string | null, perPage: number | null, page: number | null): Promise<pbReadContributorsResponse> {
     if (!anon) {
         anon=''
     } else if (anon != '') {
@@ -39,7 +36,7 @@ export async function getContributors(owner: string, repoName: string, anon: str
     }
 }
 
-export async function getContributions(login: string, numContributions: number | null): Promise<pbReadContributionsResponse> {
+export async function getContributions(base: string, login: string, numContributions: number | null): Promise<pbReadContributionsResponse> {
     if (!numContributions || numContributions == 0) {
         numContributions = 5
     }
@@ -53,7 +50,7 @@ export async function getContributions(login: string, numContributions: number |
     }
 }
 
-export async function getReadMe(owner: string, repoName: string): Promise<pbReadReadMeResponse> {
+export async function getReadMe(base: string, owner: string, repoName: string): Promise<pbReadReadMeResponse> {
     // assumed outdated README format  'master' branch rather than 'main'
     let res = await fetch(`${base}/readme/${owner}/${repoName}/main/md`);
     let readMe = await res.json();
