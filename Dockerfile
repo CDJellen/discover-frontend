@@ -7,6 +7,7 @@ COPY . .
 RUN npm install
 
 ENV PUBLIC_WRITE_FOOTER=true
+ENV PUBLIC_API_ENDPOINT=http://localhost:8080/api/v1
 
 RUN touch .env
 RUN printenv > .env
