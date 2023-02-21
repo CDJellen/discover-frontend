@@ -15,7 +15,7 @@ export async function getInfo(base: string, owner: string, repoName: string): Pr
 
 export async function getContributors(base: string, owner: string, repoName: string, anon: string | null, perPage: number | null, page: number | null): Promise<pbReadContributorsResponse> {
     if (!anon) {
-        anon=''
+        anon='false'
     } else if (anon != '') {
         anon = 'true'
     }
