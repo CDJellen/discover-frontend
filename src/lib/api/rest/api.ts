@@ -16,8 +16,6 @@ export async function getInfo(base: string, owner: string, repoName: string): Pr
 export async function getContributors(base: string, owner: string, repoName: string, anon: string | null, perPage: number | null, page: number | null): Promise<pbReadContributorsResponse> {
     if (!anon) {
         anon='false'
-    } else if (anon != '') {
-        anon = 'true'
     }
     if (!perPage || perPage == 0) {
         perPage = 5
@@ -26,7 +24,7 @@ export async function getContributors(base: string, owner: string, repoName: str
         page = 1
     }
     
-    const res = await fetch(`${base}/contributors/${owner}/${repoName}?anon=${anon}?perPage=${perPage}?page=${page}`, { method: 'GET'});
+    const res = await fetch(`${base}/contributors/${owner}/${repoName}?anon=${anon}&perPage=${perPage}&page=${page}`, { method: 'GET'});
     const repoContributors = await res.json();
 
     if (res.ok) {

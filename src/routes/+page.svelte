@@ -21,7 +21,7 @@
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
 	let perPage: number | null = null;
 	let numContributions: number | null = null;
-	let anon: string = '';
+	let anon: string = 'false';
 	let page: number = 1;
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
