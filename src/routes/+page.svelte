@@ -29,6 +29,10 @@
 	const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
 	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
+	async function clearGraph(event: any) {
+		g.clear();
+	}
+
 	async function handleApiCall(event: any) {
 		let init = event.detail.init || false;
 		let calledOwner = event.detail.owner;
@@ -121,6 +125,7 @@
 
 <div class="button-container">
 	<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={ () => { ($showReadme) ? showReadme.set(false) : showReadme.set(true); } }>Toggle README Pane</button><br/>
+	<button class="bg-slate-100 hover:bg-slate-200 text-gray-800 inline-flex px-4 border border-gray-400 rounded shadow" on:click={clearGraph}>Clear Graph</button><br/>
 </div>
 
 {#if write_footer}

@@ -140,6 +140,12 @@ export class DiscoverGraph {
             edges: [...this._edges.values()]
         };
     }
+
+    public clear() {
+        this._nodes.clear();
+        this._edges.clear();
+        this._origin = null;
+    }
 }
 
 export interface DiscoverNode extends vis.Node {
