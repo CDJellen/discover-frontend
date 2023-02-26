@@ -21,13 +21,13 @@ export function styleEdge(edge: DiscoverEdge) {
     edge.physics = true;
 
     // repo has user as major contributor
-    if (edge.isContributor) {
-        edge.dashes = true;
-        edge.width = 4;
-    }
+    //if (edge.isContributor) {
+    //    edge.dashes = true;
+    //    edge.width = 4;
+    //}
     // user contributed to repo
-    else if (edge.isContribution) {
-        edge.width = 2;
-    }
+    //else if (edge.isContribution) {
+    //    edge.width = 2;
+    //}
     return edge;
 }

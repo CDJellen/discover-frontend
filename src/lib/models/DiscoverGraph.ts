@@ -23,7 +23,7 @@ export class DiscoverGraph {
     public addNode(node_id: string, node: DiscoverNode) {
         if (node_id in this._nodes) {
             // TODO: merge nodes?
-            this._nodes.set(node_id, node);
+            //this._nodes.set(node_id, node);
         } else {
             this._nodes.set(node_id, node);
         }
@@ -88,11 +88,11 @@ export class DiscoverGraph {
                 this.addNode(contributor.login, contributor_node)
                 
                 let contributor_edge: DiscoverEdge = {
-                    id: `${repo_id}>${contributor.login}`,
-                    isContributor: true,
-                    isContribution: false,
-                    from: repo_id,
-                    to: contributor.login,
+                    id: `${contributor.login}>${repo_id}`,
+                    isContributor: false,
+                    isContribution: true,
+                    from: contributor.login,
+                    to: repo_id,
                     num_contributions: contributor.contributions
                 }
 
@@ -109,6 +109,8 @@ export class DiscoverGraph {
             isRepository: true,
             avatar_url: defaultAvatarUrl,
         }
+
+        // iterate through contributions
         for (const contribution of contributions) {
             let contribution_node: DiscoverNode = {...base_contributions_node}
             if (contribution.nameWithOwner != null) {

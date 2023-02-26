@@ -5,7 +5,7 @@
 	import { PUBLIC_API_ENDPOINT } from "$env/static/public"
 	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
 	import * as api from "$lib/api/rest/api";
-	import { readMeContent, showReadme } from "$lib/utility/store";
+	import { readMeContent, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
@@ -30,7 +30,10 @@
 	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
 	async function clearGraph(event: any) {
-		g.clear();
+		displayedNodes.clear()
+		displayedEdges.clear()
+		g.clear()
+		updateGraph()
 	}
 
 	async function handleApiCall(event: any) {
@@ -44,11 +47,11 @@
 			numContributions = event.detail.numContributions || 5
 		}
 
-		const repo_id = calledOwner+"/"+calledRepo;
-
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(api_endpoint, calledOwner, calledRepo);
 		g.pushOrigin(info, init);
+
+		const repo_id = info.message.nameWithOwner
 
 		// update the displayed graph
 		updateGraph()
@@ -118,6 +121,15 @@
 	<DiscoverForceDirectedGraph {state} on:message={handleApiCall}/>
 
 	{#if $showReadme}
+		<Readme {readMeContent} />
+	{/if}
+	{#if $showHelp}
+		<Readme {readMeContent} />
+	{/if}
+	{#if $showOptions}
+		<Readme {readMeContent} />
+	{/if}
+	{#if $showNavigation}
 		<Readme {readMeContent} />
 	{/if}
 

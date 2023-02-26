@@ -1,6 +1,5 @@
 <script lang="ts">
     import { readMeContent } from "$lib/utility/store";
-
 </script>
 
 <!-- README -->
