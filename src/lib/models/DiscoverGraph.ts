@@ -34,7 +34,7 @@ export class DiscoverGraph {
     }
     
     public checkNode(node_id: string) {
-        return node_id in this._nodes;
+        return this._nodes.has(node_id);
     }
 
     public addEdge(edge: DiscoverEdge) {
@@ -73,9 +73,10 @@ export class DiscoverGraph {
         if (init) {
             this._origin = origin
         }
-        if (!this.checkNode(origin_id)) {
-            this.addNode(origin_id, origin)
-        }
+        
+        // add new seed node even if we've already seen in
+        this.addNode(origin_id, origin)
+        
     }
 
     private processContributors(repo_id: string, message: pbReadContributorsResponse) {
@@ -132,10 +133,13 @@ export class DiscoverGraph {
                 contribution_node.url = contribution.url
 
                 // add node to graph
-                if (!this.checkNode(contribution.nameWithOwner)) {
+                if (this.checkNode(contribution.nameWithOwner) === false) {
+                    console.log("adding ", contribution.nameWithOwner)
                     this.addNode(contribution.nameWithOwner, contribution_node)
+                } else {
+                    console.log("we've seen ", contribution.nameWithOwner)
                 }
-                
+
                 let contributor_edge: DiscoverEdge = {
                     id: `${login}>${contribution.nameWithOwner}`,
                     isContributor: false,
