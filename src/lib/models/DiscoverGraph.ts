@@ -29,6 +29,14 @@ export class DiscoverGraph {
         }
     }
 
+    public checkEdge(edge: DiscoverEdge) {
+        return edge.id in this._edges;
+    }
+    
+    public checkNode(node_id: string) {
+        return node_id in this._nodes;
+    }
+
     public addEdge(edge: DiscoverEdge) {
         this._edges.add(edge);
     }
@@ -65,7 +73,9 @@ export class DiscoverGraph {
         if (init) {
             this._origin = origin
         }
-        this.addNode(origin_id, origin)
+        if (!this.checkNode(origin_id)) {
+            this.addNode(origin_id, origin)
+        }
     }
 
     private processContributors(repo_id: string, message: pbReadContributorsResponse) {
@@ -85,8 +95,10 @@ export class DiscoverGraph {
                 contributor_node.url = contributor.htmlUrl
 
                 // add node to graph
-                this.addNode(contributor.login, contributor_node)
-                
+                if (!this.checkNode(contributor.login)) {
+                    this.addNode(contributor.login, contributor_node)
+                }
+
                 let contributor_edge: DiscoverEdge = {
                     id: `${contributor.login}>${repo_id}`,
                     isContributor: false,
@@ -120,7 +132,9 @@ export class DiscoverGraph {
                 contribution_node.url = contribution.url
 
                 // add node to graph
-                this.addNode(contribution.nameWithOwner, contribution_node)
+                if (!this.checkNode(contribution.nameWithOwner)) {
+                    this.addNode(contribution.nameWithOwner, contribution_node)
+                }
                 
                 let contributor_edge: DiscoverEdge = {
                     id: `${login}>${contribution.nameWithOwner}`,

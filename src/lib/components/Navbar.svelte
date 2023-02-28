@@ -1,12 +1,10 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import logo from '$lib/assets/logo.png'
-	import Modal, {getModal} from '$lib/components/Modal.svelte';
+	  import { perPage, numContributions, showHelp, showNavigation, showOptions } from '$lib/utility/store';
 
     let repoOwner: string = 'PyTorch';
     let repoName: string = 'PyTorch';
-    let perPage: number = 30;
-    let numContributions: number = 5;
 
     const dispatch = createEventDispatcher();
 
@@ -15,88 +13,36 @@
             init: true,
             owner: repoOwner,
             repo: repoName,
-            perPage: perPage,
-            numContributions: numContributions,
+            perPage: $perPage,
+            numContributions: $numContributions,
         });
     }
-
 </script>
 
 <!-- Navbar -->
-<div class="h-14 w-screen fixed z-10 top-0 backdrop-blur text-gray-50 grid grid-cols-2">
+<div class="h-14 w-screen fixed z-10 top-0 backdrop-blur text-gray-50 grid grid-cols-3">
     <div class="h-full flex items-center justify-left gap-2 text-xl sm:text-2xl px-6">
         <a href="https://github.com/cdjellen"><img src="{logo}" alt="Logo" class="object-cover w-[48px] h-[48px] rounded-full"></a>
-        <a href="https://github.com/cdjellen/discover-open-source" class=""><span class="whitespace-nowrap">Discover New Open-Source Projects</span></a>
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"  style="width:24px;height:24px;background-color:rgb(249 250 251);" class="footer-icon" on:click={ () => getModal('info').open() }>
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"  style="width:24px;height:24px;" class="footer-icon" on:click={ () => getModal('accessibility').open() }>
+        <a href="https://github.com/cdjellen/discover" class=""><span class="whitespace-nowrap">Explore GitHub</span></a>
+        <a href="https://github.com/cdjellen"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"  style="width:24px;height:24px;background-color:rgb(249 250 251);" class="footer-icon"></a>
+        <a href="https://linkedin.com/in/cdjellen"> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"  style="width:24px;height:24px;" class="footer-icon"></a>
     </div>
-    <nav class="text-md sm:text-xl text-gray-50 flex items-center justify-center gap-2">
+    <nav class="h-full flex items-center justify-center gap-2 px-6 text-md sm:text-xl text-gray-50">
         <form class="w-full">
             <div class="flex items-center border-b border-gray-50 py-2">
-                <p class="text-gray-50 text-xs bold">Owner: </p>
-                <input bind:value={ repoOwner } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Microsoft" aria-label="Repository Owner">
-                <p class="text-gray-50 text-xs bold">Repository: </p>
-                <input bind:value={ repoName } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="LightGBM" aria-label="Repository name">
-                <p class="text-gray-50 text-xs bold">Number of Contributions: </p>
-                <input bind:value={ numContributions } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="number" placeholder="5" aria-label="Number of Contributions">
+                <p class="text-gray-50 text-lg bold">Owner: </p>
+                <input bind:value={ repoOwner } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="PyTorch" aria-label="Repository Owner">
+                <p class="text-gray-50 text-lg bold">Repository: </p>
+                <input bind:value={ repoName } class="appearance-none bg-transparent border-none w-full text-gray-400 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="PyTorch" aria-label="Repository name">
                 <button on:click={() => { callApi() }} class="flex-shrink-0 bg-sky-900 hover:bg-sky-700 border-sky-900 hover:border-sky-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
-                    Discover
+                    Explore
                 </button>
             </div>
           </form>
     </nav>
+    <div class="h-full flex items-center justify-center gap-2 px-6">
+      <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-transparent bg-sky-900 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" on:click={ () => { $showOptions ? showOptions.set(false) : showOptions.set(true) } }>Options</button>
+      <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-transparent bg-sky-900 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" on:click={ () => { $showHelp ? showHelp.set(false) : showHelp.set(true) } }>Help</button>
+      <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-transparent bg-sky-900 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" on:click={ () => { $showNavigation ? showNavigation.set(false) : showNavigation.set(true) } }>Navigation</button>
+    </div>
 </div>
-
-<Modal id='info'>
-	<h2>Discover new open-source projects using the GitHub contributor network.</h2>
-	<br/>
-	<p>
-		The discover graph queries the GitHub REST API for the top 25 contributors to the specified open-source repository.  Each top contributor's current contributions to the open-source community are captured from their GitHub events.  The discover graph then maps potential projects of interest back to the queried repository through common contriubtors.
-	</p>
-    <br/>
-    <p>
-        To learn more about the current projects maintained by shared contributors, simply double-click on the repository node in the discover graph to bring up the project's README.  Some assets may fail to load, so if the project sounds interesting be sure to check it out in GitHub.
-    </p>
-</Modal>
-
-<Modal id='accessibility'>
-	<h1>Keyboard Navigation</h1>
-    <table class="table-auto">
-        <thead>
-          <tr>
-            <th>Keyboard Shortcut</th>
-            <th>Navigation Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Up arrow</td>
-            <td>Navigate discover graph upwards</td>
-          </tr>
-          <tr>
-            <td>Down arrow</td>
-            <td>Navigate discover graph downwards</td>
-          </tr>
-          <tr>
-            <td>Left arrow</td>
-            <td>Navigate discover graph to the left</td>
-          </tr>
-          <tr>
-            <td>Right arrow</td>
-            <td>Navigate discover graph to the right</td>
-          </tr>
-          <tr>
-            <td>Up arrow</td>
-            <td>Navigate discover graph upwards</td>
-          </tr>
-          <tr>
-            <td>Page Up, =, [/td>
-            <td>Zoom in</td>
-          </tr>
-          <tr>
-            <td>Page Down, -, ]/td>
-            <td>Zoom in</td>
-          </tr>
-        </tbody>
-      </table>
-</Modal>

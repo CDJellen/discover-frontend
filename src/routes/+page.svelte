@@ -5,7 +5,7 @@
 	import { PUBLIC_API_ENDPOINT } from "$env/static/public"
 	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
 	import * as api from "$lib/api/rest/api";
-	import { readMeContent, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
+	import { readMeContent, perPage, numContributions, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
@@ -15,12 +15,14 @@
 	import Navbar from "$lib/components/Navbar.svelte";
 	import Readme from "$lib/components/Readme.svelte";
 	import Footer from "$lib/components/Footer.svelte";
+	import OptionsModal from "$lib/components/OptionsModal.svelte";
+	import HelpModal from "$lib/components/HelpModal.svelte";
+	import NavModal from "$lib/components/NavModal.svelte";
+	
 
 	let g = new DiscoverGraph();
 	let displayedNodes: DataSet<DiscoverNode> = new DataSet({});
     let displayedEdges: DataSet<DiscoverEdge> = new DataSet({});
-	let perPage: number | null = null;
-	let numContributions: number | null = null;
 	let anon: string = 'false';
 	let page: number = 1;
 
@@ -40,11 +42,11 @@
 		let init = event.detail.init || false;
 		let calledOwner = event.detail.owner;
 		let calledRepo = event.detail.repo;
-		if (!perPage) {
-			perPage = event.detail.perPage || 5
+		if (!$perPage) {
+			$perPage = event.detail.perPage || 5
 		}
-		if (!numContributions) {
-			numContributions = event.detail.numContributions || 5
+		if (!$numContributions) {
+			$numContributions = event.detail.numContributions || 5
 		}
 
 		// get the seed repo
@@ -57,7 +59,7 @@
 		updateGraph()
 
 		// get all contributors
-		const contributors: pbReadContributorsResponse = await api.getContributors(api_endpoint, calledOwner, calledRepo, anon, perPage, page);
+		const contributors: pbReadContributorsResponse = await api.getContributors(api_endpoint, calledOwner, calledRepo, anon, $perPage, page);
 		g.pushContributors(repo_id, contributors);
 
 		// update the displayed graph
@@ -67,7 +69,7 @@
 		for (const contributor of contributors_to_query) {
 			const contributor_login: string = contributor.login || "";
 			if (contributor_login != "" && !(contributor_login.indexOf("[bot]") >= 0)) {
-				const contributions: pbReadContributionsResponse = await api.getContributions(api_endpoint, contributor_login, numContributions);
+				const contributions: pbReadContributionsResponse = await api.getContributions(api_endpoint, contributor_login, $numContributions);
 				g.pushContributions(contributor_login, contributions);
 
 				// update the displayed graph
@@ -124,13 +126,13 @@
 		<Readme {readMeContent} />
 	{/if}
 	{#if $showHelp}
-		<Readme {readMeContent} />
+		<HelpModal />
 	{/if}
 	{#if $showOptions}
-		<Readme {readMeContent} />
+		<OptionsModal />
 	{/if}
 	{#if $showNavigation}
-		<Readme {readMeContent} />
+		<NavModal />
 	{/if}
 
 </div>
