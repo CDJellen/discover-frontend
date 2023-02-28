@@ -9,9 +9,6 @@
 	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
     import { readMeContent, showReadme } from "$lib/utility/store";
 	import * as api from "$lib/api/rest/api";
-    import { styleNode } from "$lib/models/NodeStyle";
-    import { styleEdge } from "$lib/models/EdgeStyle";
-    import { decompose, DiscoverGraph } from "$lib/models/DiscoverGraph";
     import type { DiscoverNode, DiscoverEdge } from "$lib/models/DiscoverGraph";
 	import type { pbReadReadMeResponse } from "$lib/models/generated";
 

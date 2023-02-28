@@ -1,4 +1,4 @@
-<!-- Footer -->
+<!-- FOOTER -->
 <footer class="text-gray-800 text-sm">
     <div class="grid grid-cols-12 ">
         <div class="col-span-3">

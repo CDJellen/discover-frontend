@@ -1,6 +1,5 @@
 import type { pbReadContributionsResponse, pbReadContributorsResponse, pbReadInfoResponse } from "$lib/models/generated";
 import type * as vis from "vis-network";
-import type { DataSet } from "vis-data";
 
 const defaultAvatarUrl = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg";
 const defaultUrl = "https://github.com"

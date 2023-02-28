@@ -1,6 +1,4 @@
 import type { pbReadInfoResponse, pbReadContributorsResponse, pbReadContributionsResponse, pbReadReadMeResponse } from "$lib/models/generated";
-import type { DiscoverGraph } from "$lib/models/DiscoverGraph";
-//import { env } from 'node:process';
 
 export async function getInfo(base: string, owner: string, repoName: string): Promise<pbReadInfoResponse> {
     const res = await fetch(`${base}/info/${owner}/${repoName}`, { method: 'GET'});
@@ -64,8 +62,3 @@ export async function getReadMe(base: string, owner: string, repoName: string): 
     }
 
 }
-
-//export async function clearDiscoverNetwork(): Promise<DiscoverGraph> {
-//    const message: DiscoverGraph{}
-//    return message
-//}
