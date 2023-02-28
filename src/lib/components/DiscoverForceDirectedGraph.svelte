@@ -30,7 +30,7 @@
   
     const dispatch = createEventDispatcher();
     const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
-    const height: number = write_footer ? 97.5 : 100;
+    const height: number = write_footer ? 98 : 100;
 	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
     onMount(() => {
