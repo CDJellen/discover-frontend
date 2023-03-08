@@ -5,8 +5,7 @@
     import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
-    import { PUBLIC_API_ENDPOINT } from "$env/static/public"
-	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
+    import { env } from "$env/dynamic/public"
     import { readMeContent, showReadme } from "$lib/utility/store";
 	import * as api from "$lib/api/rest/api";
     import type { DiscoverNode, DiscoverEdge } from "$lib/models/DiscoverGraph";
@@ -26,9 +25,9 @@
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
   
     const dispatch = createEventDispatcher();
-    const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
+    const write_footer = (env.PUBLIC_WRITE_FOOTER === 'true');
     const height: number = write_footer ? 98 : 100;
-	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
+	const api_endpoint = env.PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
     onMount(() => {
         // TODO clean

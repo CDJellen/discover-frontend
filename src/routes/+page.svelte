@@ -2,8 +2,7 @@
 	import * as vis from "vis-network";
     import { DataSet } from "vis-data";
 
-	import { PUBLIC_API_ENDPOINT } from "$env/static/public"
-	import { PUBLIC_WRITE_FOOTER } from "$env/static/public"
+	import { env } from "$env/dynamic/public"
 	import * as api from "$lib/api/rest/api";
 	import { readMeContent, perPage, numContributions, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
@@ -28,8 +27,8 @@
 
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
-	const write_footer = (PUBLIC_WRITE_FOOTER === 'true');
-	const api_endpoint = PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
+	const write_footer = (env.PUBLIC_WRITE_FOOTER === 'true');
+	const api_endpoint = env.PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
 	async function clearGraph(event: any) {
 		displayedNodes.clear()
