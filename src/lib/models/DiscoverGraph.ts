@@ -133,10 +133,8 @@ export class DiscoverGraph {
 
                 // add node to graph
                 if (this.checkNode(contribution.nameWithOwner) === false) {
-                    console.log("adding ", contribution.nameWithOwner)
                     this.addNode(contribution.nameWithOwner, contribution_node)
                 } else {
-                    console.log("we've seen ", contribution.nameWithOwner)
                 }
 
                 let contributor_edge: DiscoverEdge = {
