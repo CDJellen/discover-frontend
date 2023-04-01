@@ -50,7 +50,7 @@ export async function getReadMe(base: string, owner: string, repoName: string): 
     // assumed outdated README format  'master' branch rather than 'main'
     let res = await fetch(`${base}/readme/${owner}/${repoName}/main/md`);
     let readMe = await res.json();
-    if (res.ok && !(readMe.message.html.indexOf("<h1>Failed") >= 0)) {
+    if (res.ok && !(readMe.message.html.indexOf("<h1>Failed") >= 0) && !(readMe.message.html.indexOf("404: Not Found") >= 0)) {
         return readMe;
     }
     res = await fetch(`${base}/readme/${owner}/${repoName}/master/md`);

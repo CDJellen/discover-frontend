@@ -28,7 +28,7 @@
     export let state: vis.Data = { nodes: displayedNodes, edges: displayedEdges };
 
 	const write_footer = (env.PUBLIC_WRITE_FOOTER === 'true');
-	const api_endpoint = env.PUBLIC_API_ENDPOINT || '/api/v1'
+	const api_endpoint = env.PUBLIC_API_ENDPOINT || 'http://localhost:8080/api/v1'
 
 	async function clearGraph(event: any) {
 		displayedNodes.clear()
