@@ -35,7 +35,7 @@
                 <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-core-features">Core Features</h3>
                   <div class="text-sm text-gray-700 whitespace-pre-line">You can learn more about each repository node in the Explore graph by double clicking to bring up its README file, if available.
 
-                    You can continue exploring by Shift-clicking on a repository node to repeat the exploration process, gathering the top contributors and their contributions, and adding them toi the graph.
+                    You can continue exploring by Shift-clicking on a repository node to repeat the exploration process, gathering the top contributors and their contributions, and adding them to the graph.
               
                   </div>
               </div>
