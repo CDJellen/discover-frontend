@@ -35,7 +35,7 @@
 		displayedEdges.clear()
 		g.clear()
 		updateGraph()
-		$isInit = true;
+		isInit.set(true);
 	}
 
 	async function handleApiCall(event: any) {
@@ -83,7 +83,7 @@
 		updateGraph()
 
 		// set to false once initialized
-		$isInit = false;
+		isInit.set(false);
 
 	}
 
@@ -120,7 +120,6 @@
 <div id="navbar"></div>
 
 <Navbar on:init={handleApiCall}/>
-<OptionsModal on:init={handleApiCall}/>
 
 <div class="App">
 
@@ -133,7 +132,7 @@
 		<HelpModal />
 	{/if}
 	{#if $showOptions}
-		<OptionsModal />
+		<OptionsModal on:init={handleApiCall}/>
 	{/if}
 	{#if $showNavigation}
 		<NavModal />
