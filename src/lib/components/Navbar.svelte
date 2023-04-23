@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, getContext } from 'svelte';
     import logo from '$lib/assets/logo.png'
-	  import { perPage, numContributions, showHelp, showNavigation, showOptions } from '$lib/utility/store';
+	import { perPage, numContributions, showHelp, showNavigation, showOptions } from '$lib/utility/store';
 
-    let repoOwner: string = 'PyTorch';
-    let repoName: string = 'PyTorch';
+    let repoOwner = getContext("repo");
+    let repoName = getContext("owner");
 
     const dispatch = createEventDispatcher();
 

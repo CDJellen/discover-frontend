@@ -4,7 +4,7 @@
 
 	import { env } from "$env/dynamic/public"
 	import * as api from "$lib/api/rest/api";
-	import { readMeContent, perPage, numContributions, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
+	import { readMeContent, isInit, repoOwner, repoName, perPage, numContributions, showReadme, showHelp, showOptions, showNavigation } from "$lib/utility/store";
 	import type { pbReadContributionsResponse, pbReadInfoResponse, pbReadContributorsResponse, pbReadReadMeResponse, pbRepoContributor } from "$lib/models/generated";
     import { styleNode } from "$lib/models/NodeStyle";
     import { styleEdge } from "$lib/models/EdgeStyle";
@@ -35,12 +35,12 @@
 		displayedEdges.clear()
 		g.clear()
 		updateGraph()
+		$isInit = true;
 	}
 
 	async function handleApiCall(event: any) {
-		let init = event.detail.init || false;
-		let calledOwner = event.detail.owner;
-		let calledRepo = event.detail.repo;
+		let calledOwner = event.detail.owner || $repoOwner;
+		let calledRepo = event.detail.repo || $repoName;
 		if (!$perPage) {
 			$perPage = event.detail.perPage || 5
 		}
@@ -50,7 +50,7 @@
 
 		// get the seed repo
 		const info: pbReadInfoResponse = await api.getInfo(api_endpoint, calledOwner, calledRepo);
-		g.pushOrigin(info, init);
+		g.pushOrigin(info, $isInit);
 
 		const repo_id = info.message.nameWithOwner
 
@@ -77,10 +77,14 @@
 		}
 
 		// reset origin style
-		g.pushOrigin(info, init);
+		g.pushOrigin(info, $isInit);
 
 		// update the displayed graph
 		updateGraph()
+
+		// set to false once initialized
+		$isInit = false;
+
 	}
 
 	async function updateGraph() {
@@ -116,6 +120,7 @@
 <div id="navbar"></div>
 
 <Navbar on:init={handleApiCall}/>
+<OptionsModal on:init={handleApiCall}/>
 
 <div class="App">
 
