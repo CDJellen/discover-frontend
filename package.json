@@ -1,6 +1,6 @@
 {
 	"name": "discover-open-source",
-	"version": "v0.0.4",
+	"version": "v0.0.5",
 	"description": "Find new Open-source projects by exploring the GitHub graph.",
 	"private": true,
 	"scripts": {
